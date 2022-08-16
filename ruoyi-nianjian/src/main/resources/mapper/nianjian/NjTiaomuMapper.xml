@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.nianjian.mapper.NjTiaomuMapper">
+    
+    <resultMap type="NjTiaomu" id="NjTiaomuResult">
+        <result property="tiaomuId"    column="tiaomu_id"    />
+        <result property="lanmuId"    column="lanmu_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="loginName"    column="login_name"    />
+        <result property="tiaomuName"    column="tiaomu_name"    />
+        <result property="tiaomuContent"    column="tiaomu_content"    />
+        <result property="isDsj"    column="is_dsj"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+
+
+    <sql id="selectNjTiaomuVo">
+        select tiaomu_id, lanmu_id, user_id, login_name, tiaomu_name, tiaomu_content, is_dsj, del_flag, create_by, create_time, update_by, update_time, remark from nj_tiaomu
+    </sql>
+
+<!--    <select id="selectNjTiaomuList" parameterType="NjTiaomu" resultMap="NjTiaomuResult">-->
+<!--        <include refid="selectNjTiaomuVo"/>-->
+<!--        <where>  -->
+<!--            <if test="lanmuId != null "> and lanmu_id = #{lanmuId}</if>-->
+<!--            <if test="userId != null "> and user_id = #{userId}</if>-->
+<!--            <if test="loginName != null  and loginName != ''"> and login_name like concat('%', #{loginName}, '%')</if>-->
+<!--            <if test="tiaomuName != null  and tiaomuName != ''"> and tiaomu_name like concat('%', #{tiaomuName}, '%')</if>-->
+<!--            <if test="tiaomuContent != null  and tiaomuContent != ''"> and tiaomu_content = #{tiaomuContent}</if>-->
+<!--            <if test="isDsj != null  and isDsj != ''"> and is_dsj = #{isDsj}</if>-->
+<!--        </where>-->
+<!--    </select>-->
+    <select id="selectNjTiaomuList" parameterType="NjTiaomu" resultMap="NjTiaomuResult">
+        select t.tiaomu_id, t.lanmu_id, t.user_id, t.login_name, t.tiaomu_name, t.tiaomu_content, t.is_dsj, t.del_flag, t.create_by, t.create_time, t.update_by, t.update_time, t.remark from nj_tiaomu t
+        left join nj_lanmu l on t.lanmu_id = l.lanmu_id
+        where t.del_flag = '0'
+        <if test="tiaomuId != null "> and tiaomu_id = #{tiaomuId}</if>
+        <if test="userId != null "> and user_id = #{userId}</if>
+        <if test="loginName != null  and loginName != ''"> and login_name like concat('%', #{loginName}, '%')</if>
+        <if test="tiaomuName != null  and tiaomuName != ''"> and tiaomu_name like concat('%', #{tiaomuName}, '%')</if>
+        <if test="tiaomuContent != null  and tiaomuContent != ''"> and tiaomu_content = #{tiaomuContent}</if>
+        <if test="isDsj != null  and isDsj != ''"> and is_dsj = #{isDsj}</if>
+        <if test="lanmuId != null and lanmuId != 0">
+            AND (t.lanmu_id = #{lanmu_id} OR t.lanmu_id IN ( SELECT l.lanmu_id FROM nj_lanmu l WHERE FIND_IN_SET (#{lanmuId},ancestors) ))
+        </if>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+    </select>
+
+    
+    <select id="selectNjTiaomuByTiaomuId" parameterType="Long" resultMap="NjTiaomuResult">
+        <include refid="selectNjTiaomuVo"/>
+        where tiaomu_id = #{tiaomuId}
+    </select>
+        
+    <insert id="insertNjTiaomu" parameterType="NjTiaomu" useGeneratedKeys="true" keyProperty="tiaomuId">
+        insert into nj_tiaomu
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tiaomuId != null">tiaomu_id,</if>
+            <if test="lanmuId != null">lanmu_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="loginName != null">login_name,</if>
+            <if test="tiaomuName != null and tiaomuName != ''">tiaomu_name,</if>
+            <if test="tiaomuContent != null and tiaomuContent != ''">tiaomu_content,</if>
+            <if test="isDsj != null and isDsj != ''">is_dsj,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tiaomuId != null">#{tiaomuId},</if>
+            <if test="lanmuId != null">#{lanmuId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="loginName != null">#{loginName},</if>
+            <if test="tiaomuName != null and tiaomuName != ''">#{tiaomuName},</if>
+            <if test="tiaomuContent != null and tiaomuContent != ''">#{tiaomuContent},</if>
+            <if test="isDsj != null and isDsj != ''">#{isDsj},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateNjTiaomu" parameterType="NjTiaomu">
+        update nj_tiaomu
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="lanmuId != null">lanmu_id = #{lanmuId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="loginName != null">login_name = #{loginName},</if>
+            <if test="tiaomuName != null and tiaomuName != ''">tiaomu_name = #{tiaomuName},</if>
+            <if test="tiaomuContent != null and tiaomuContent != ''">tiaomu_content = #{tiaomuContent},</if>
+            <if test="isDsj != null and isDsj != ''">is_dsj = #{isDsj},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where tiaomu_id = #{tiaomuId}
+    </update>
+
+    <delete id="deleteNjTiaomuByTiaomuId" parameterType="Long">
+        delete from nj_tiaomu where tiaomu_id = #{tiaomuId}
+    </delete>
+
+    <delete id="deleteNjTiaomuByTiaomuIds" parameterType="String">
+        delete from nj_tiaomu where tiaomu_id in 
+        <foreach item="tiaomuId" collection="array" open="(" separator="," close=")">
+            #{tiaomuId}
+        </foreach>
+    </delete>
+
+</mapper>

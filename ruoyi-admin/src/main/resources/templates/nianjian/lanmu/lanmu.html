@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('年鉴栏目信息列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>父部门ID：</label>
+                                <input type="text" name="parentId"/>
+                            </li>
+                            <li>
+                                <label>祖级列表：</label>
+                                <input type="text" name="ancestors"/>
+                            </li>
+                            <li>
+                                <label>栏目名称：</label>
+                                <input type="text" name="lanmuName"/>
+                            </li>
+                            <li>
+                                <label>显示顺序：</label>
+                                <input type="text" name="orderNum"/>
+                            </li>
+                            <li>
+                                <label>负责人：</label>
+                                <input type="text" name="leader"/>
+                            </li>
+                            <li>
+                                <label>联系电话：</label>
+                                <input type="text" name="phone"/>
+                            </li>
+                            <li>
+                                <label>创建者：</label>
+                                <input type="text" name="creatBy"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="nianjian:lanmu:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="nianjian:lanmu:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="nianjian:lanmu:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="nianjian:lanmu:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('nianjian:lanmu:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('nianjian:lanmu:remove')}]];
+        var prefix = ctx + "nianjian/lanmu";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "年鉴栏目信息",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'lanmuId',
+                    title: '栏目ID',
+                    visible: false
+                },
+                {
+                    field: 'parentId',
+                    title: '父部门ID'
+                },
+                {
+                    field: 'ancestors',
+                    title: '祖级列表'
+                },
+                {
+                    field: 'lanmuName',
+                    title: '栏目名称'
+                },
+                {
+                    field: 'orderNum',
+                    title: '显示顺序'
+                },
+                {
+                    field: 'leader',
+                    title: '负责人'
+                },
+                {
+                    field: 'phone',
+                    title: '联系电话'
+                },
+                {
+                    field: 'status',
+                    title: '部门状态'
+                },
+                {
+                    field: 'creatBy',
+                    title: '创建者'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.lanmuId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.lanmuId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

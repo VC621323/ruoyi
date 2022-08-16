@@ -67,6 +67,12 @@
             <artifactId>ruoyi-generator</artifactId>
         </dependency>
 
+        <!-- nianjian-->
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-nianjian</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.nianjian.mapper.NjLanmuMapper">
+    
+    <resultMap type="NjLanmu" id="NjLanmuResult">
+        <result property="lanmuId"    column="lanmu_id"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="ancestors"    column="ancestors"    />
+        <result property="lanmuName"    column="lanmu_name"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="leader"    column="leader"    />
+        <result property="phone"    column="phone"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="creatBy"    column="creat_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectNjLanmuVo">
+        select lanmu_id, parent_id, ancestors, lanmu_name, order_num, leader, phone, status, del_flag, creat_by, create_time, update_by, update_time from nj_lanmu
+    </sql>
+
+    <select id="selectNjLanmuList" parameterType="NjLanmu" resultMap="NjLanmuResult">
+        <include refid="selectNjLanmuVo"/>
+        <where>  
+            <if test="parentId != null "> and parent_id = #{parentId}</if>
+            <if test="ancestors != null  and ancestors != ''"> and ancestors = #{ancestors}</if>
+            <if test="lanmuName != null  and lanmuName != ''"> and lanmu_name like concat('%', #{lanmuName}, '%')</if>
+            <if test="orderNum != null "> and order_num = #{orderNum}</if>
+            <if test="leader != null  and leader != ''"> and leader = #{leader}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="creatBy != null  and creatBy != ''"> and creat_by = #{creatBy}</if>
+        </where>
+    </select>
+    
+    <select id="selectNjLanmuByLanmuId" parameterType="Long" resultMap="NjLanmuResult">
+        <include refid="selectNjLanmuVo"/>
+        where lanmu_id = #{lanmuId}
+    </select>
+        
+    <insert id="insertNjLanmu" parameterType="NjLanmu">
+        insert into nj_lanmu
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="lanmuId != null">lanmu_id,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="ancestors != null">ancestors,</if>
+            <if test="lanmuName != null">lanmu_name,</if>
+            <if test="orderNum != null">order_num,</if>
+            <if test="leader != null">leader,</if>
+            <if test="phone != null">phone,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="creatBy != null">creat_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="lanmuId != null">#{lanmuId},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="ancestors != null">#{ancestors},</if>
+            <if test="lanmuName != null">#{lanmuName},</if>
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="leader != null">#{leader},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="creatBy != null">#{creatBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateNjLanmu" parameterType="NjLanmu">
+        update nj_lanmu
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="ancestors != null">ancestors = #{ancestors},</if>
+            <if test="lanmuName != null">lanmu_name = #{lanmuName},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="leader != null">leader = #{leader},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="creatBy != null">creat_by = #{creatBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where lanmu_id = #{lanmuId}
+    </update>
+
+    <delete id="deleteNjLanmuByLanmuId" parameterType="Long">
+        delete from nj_lanmu where lanmu_id = #{lanmuId}
+    </delete>
+
+    <delete id="deleteNjLanmuByLanmuIds" parameterType="String">
+        delete from nj_lanmu where lanmu_id in 
+        <foreach item="lanmuId" collection="array" open="(" separator="," close=")">
+            #{lanmuId}
+        </foreach>
+    </delete>
+
+    <select id="selectRoleLanmuTree" parameterType="Long" resultType="String">
+        select lanmu_id,lanmu_name
+        from nj_lanmu
+             left join sys_role_lanmu rd on nj_lanmu.lanmu_id = rd.lanmu_id
+        where nj_lanmu.del_flag = '0' and rd.role_id = #{roleId}
+        order by nj_lanmu.parent_id,nj_lanmu.order_num
+    </select>
+
+    <select id="selectLanmuCount" parameterType="NjLanmu" resultType="int">
+        select count(1) from nj_lanmu
+        where del_flag = '0'
+        <if test="lanmuId != null and lanmuId != 0">and lanmu_id =#{lanmuId}</if>
+        <if test="parentId != null and parentId != 0">and parent_id = #{parentId}</if>
+    </select>
+
+    <select id="checkLanmuExistUser" parameterType="Long" resultType="int">
+        select count(1) from sys_user where lanmu_id = #{lanmuId} and del_flag = '0'
+    </select>
+
+</mapper>

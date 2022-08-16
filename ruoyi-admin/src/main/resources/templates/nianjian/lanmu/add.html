@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增年鉴栏目信息')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-lanmu-add">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">父部门ID：</label>
+                <div class="col-sm-8">
+                    <input name="parentId" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">栏目名称：</label>
+                <div class="col-sm-8">
+                    <input name="lanmuName" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">显示顺序：</label>
+                <div class="col-sm-8">
+                    <input name="orderNum" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">负责人：</label>
+                <div class="col-sm-8">
+                    <input name="leader" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">联系电话：</label>
+                <div class="col-sm-8">
+                    <input name="phone" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">删除标志：</label>
+                <div class="col-sm-8">
+                    <input name="delFlag" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">创建者：</label>
+                <div class="col-sm-8">
+                    <input name="creatBy" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "nianjian/lanmu"
+        $("#form-lanmu-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-lanmu-add').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

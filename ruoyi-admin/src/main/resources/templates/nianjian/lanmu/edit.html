@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改年鉴栏目信息')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-lanmu-edit" th:object="${njLanmu}">
+            <input name="lanmuId" th:field="*{lanmuId}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">父部门ID：</label>
+                <div class="col-sm-8">
+                    <input name="parentId" th:field="*{parentId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">栏目名称：</label>
+                <div class="col-sm-8">
+                    <input name="lanmuName" th:field="*{lanmuName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">显示顺序：</label>
+                <div class="col-sm-8">
+                    <input name="orderNum" th:field="*{orderNum}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">负责人：</label>
+                <div class="col-sm-8">
+                    <input name="leader" th:field="*{leader}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">联系电话：</label>
+                <div class="col-sm-8">
+                    <input name="phone" th:field="*{phone}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">创建者：</label>
+                <div class="col-sm-8">
+                    <input name="creatBy" th:field="*{creatBy}" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "nianjian/lanmu";
+        $("#form-lanmu-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-lanmu-edit').serialize());
+            }
+        }
+    </script>
+</body>
+</html>
